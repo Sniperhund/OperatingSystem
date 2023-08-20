@@ -33,6 +33,8 @@
         "xstring": "c",
         "xtree": "c",
         "xutility": "c",
-        "gdt.h": "c"
+        "gdt.h": "c",
+        "stddef.h": "c",
+        "binary.h": "c"
     }
 }

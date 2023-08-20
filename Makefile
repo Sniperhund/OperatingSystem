@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := run
+
 kernel_source_files := $(shell find src/impl/kernel -name *.c)
 kernel_object_files := $(patsubst src/impl/kernel/%.c, build/kernel/%.o, $(kernel_source_files))
 
@@ -27,3 +29,11 @@ build-x86_64: $(kernel_object_files) $(x86_64_object_files)
 	x86_64-elf-ld -m elf_i386 -n -o dist/x86_64/kernel.bin -T targets/x86_64/linker.ld $(kernel_object_files) $(x86_64_object_files) && \
 	cp dist/x86_64/kernel.bin targets/x86_64/iso/boot/kernel.bin && \
 	grub-mkrescue /usr/lib/grub/i386-pc -o dist/x86_64/kernel.iso targets/x86_64/iso
+
+# Run only if you have wsl with qemu installed
+.PHONY: run
+run: build-x86_64
+	qemu-system-x86_64 -cdrom dist/x86_64/kernel.iso -L /usr/share/qemu/
+
+clean:
+	rm -rf build dist

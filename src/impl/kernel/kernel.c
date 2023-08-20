@@ -1,11 +1,27 @@
 #include "print.h"
-#include "gdt.h"
+#include "interrupts/gdt.h"
+#include "interrupts/idt.h"
+#include "interrupts/irq.h"
+#include "interrupts/isr.h"
 #include "drivers/terminal.h"
 
-void kernel_main() {
-    GDTInitialize();
+void timer(Registers* reg);
 
+void kernel_main() {
     TerminalClear();
+
+    GDTInitialize();
+    IDT_Initialize();
+    ISR_Initialize();
+    IRQ_Initialize();
     
-    kprintf("You are very handsome!");
+    IRQ_RegisterHandler(0, timer);
+
+    while (1) {
+        asm volatile ("nop");
+    }
+}
+
+void timer(Registers* reg) {
+    kprintf("Time is funnnn!");
 }
